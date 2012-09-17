@@ -1,0 +1,9 @@
+1. Primitive server:
+	-multiclient
+	-remote acces to shell
+	-
+
+2. Client:
+	-server output cacheing
+	-cli interface
+	
