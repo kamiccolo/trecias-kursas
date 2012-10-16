@@ -76,7 +76,7 @@ char* mPop(TMQueue* mqToUse)
 	}
 	else
 	{
-		char* retTmp = malloc(strlen((char*) &(mqToUse -> fMessage -> mString.text)));
+		char* retTmp = malloc(strlen((char*) &(mqToUse -> fMessage -> mString.text))+1);
 		strcpy(retTmp, (char*) &(mqToUse -> fMessage -> mString.text));
 
 		TMessage* secondMessage = mqToUse -> fMessage -> nMessage;

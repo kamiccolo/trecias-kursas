@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "mQueue.c"
+#include <stdlib.h>
+
+#include "mQueue.h"
 
 int main()
 {
@@ -26,6 +28,7 @@ int main()
 	printf("First value: %s\n", (char*) &(mainQ -> fMessage -> mString.text));
 	printf("count: %i\n", mainQ -> count);
 	printf("Last value: %s\n\n", (char*) &(mainQ -> lMessage -> mString.text));
+	free(newPoo);
 
 
 	printf("mGet test: \n");
