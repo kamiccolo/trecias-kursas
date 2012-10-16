@@ -1,8 +1,8 @@
 #ifndef __MQUEUE_H
 #define __MQUEUE_H
 
-#define MESSAGE_MAX_SIZE	512
-#define MESSAGE_MAX_COUNT	10
+#define MESSAGE_MAX_SIZE 	512
+#define MESSAGE_MAX_COUNT 	10
 
 typedef enum 
 {
@@ -37,4 +37,5 @@ void mDestroy(TMessage* mToDestroy);
 bool mPush(char* mBody, TMQueue* mqToUse);
 char* mPop(TMQueue* mqToUse);
 char* mGet(TMQueue* mqToUse);
+
 #endif

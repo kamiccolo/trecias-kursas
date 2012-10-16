@@ -1,4 +1,6 @@
-#ifndef __server_h
-#define __server_h
+#ifndef __SERVER_H
+#define __SERVER_H
+
+void processNewFork();
 
 #endif
