@@ -37,7 +37,7 @@ int main()
 	printf("First value: %s\n", (char*) &(mainQ -> fMessage -> mString.text));
 	printf("count: %i\n\n", mainQ -> count);
 	
-	printf("mDestroy test:\n");
+	printf("mDestroy n push test:\n");
 	mDestroy(mainQ -> fMessage);
 	mainQ -> count = 0;
 	mPush((char*)cM, mainQ);

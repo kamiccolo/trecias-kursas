@@ -5,10 +5,11 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include "defaults.h"
-#include "server.h"
 #include "mQueue.h"
+#include "server.h"
 
 int main()
 {
@@ -26,8 +27,9 @@ int main()
 	portNo = DEFAULT_PORT;
 
 	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_port = (htons(portNo));
-	serv_addr.sin_addr.s_addr = INADDR_ANY; /* ip adress of machine server is running. Now obtained automatically. */
+	serv_addr.sin_port = htons(portNo);
+	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY); /* ip adress of machine server is running. Now obtained automatically. */
+	printf("INADDR_ANY: %d\n", INADDR_ANY);
 	
 	if(bind(sockFD, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) < 0)
 	{
@@ -37,6 +39,7 @@ int main()
 	}
 	
 	listen(sockFD, MAX_WAITING_CONS);
+	TMQueue* mainBuffer = mqInit();
 	
 	while(true)
 	{
@@ -45,21 +48,38 @@ int main()
 		{
 			printf("Error on accepting socket!\n");
 		}
-		
-		int pid = fork();
-		if(pid < 0)
-		{
-			printf("Error on fork!\n");
-		}
 		else
 		{
-			if(pid == 0)
+			char connectedIP[INET_ADDRSTRLEN];
+			inet_ntop(AF_INET, &cli_addr.sin_addr, connectedIP, INET_ADDRSTRLEN);
+			printf("New connection accepted: %s\n", connectedIP);
+	
+			int pid = fork();
+			if(pid < 0)
 			{
-				/* processNewFork(); */
-				exit(0);
+				printf("Error on fork!\n");
 			}
+			else
+			{
+				if(pid == 0)
+				{	
+				/* need to create and pass logged in users structure for this function and buffers */
+					processNewFork(newSockFD, (struct sockaddr_in*) &cli_addr, (TMainBuffer*) mainBuffer);
+					exit(0);
+				}	
+			}	
 		}
-		close(newSockFD);
+		
 	}
+	printf("Closing main socket...\n");
+	close(newSockFD);
 	return 0;
+}
+
+void processNewFork(SOCKET sockFD, struct sockaddr_in* addr_cli, TMainBuffer* mainBuffer)
+{
+	write(sockFD,"Test!\n", 6); /* for fast telnet testing temporary */
+	
+	printf("Closing child socket...\n");
+	close(sockFD);
 }

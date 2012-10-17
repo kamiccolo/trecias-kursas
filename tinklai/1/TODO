@@ -1,7 +1,5 @@
-1. Primitive server:
+1. Primitive messenger server:
 	-multiclient
-	-remote acces to shell
-	-
 
 2. Client:
 	-server output cacheing
