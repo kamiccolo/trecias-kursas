@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h>	
+#include <string.h>
 #include <unistd.h>
 
 #include <sys/types.h>
@@ -78,8 +79,39 @@ int main()
 
 void processNewFork(SOCKET sockFD, struct sockaddr_in* addr_cli, TMainBuffer* mainBuffer)
 {
-	write(sockFD,"Test!\n", 6); /* for fast telnet testing temporary */
-	
-	printf("Closing child socket...\n");
-	close(sockFD);
+	char sendCommand[5] = "SEND ";
+	char joinCommand[5] = "JOIN ";
+	char listCommand[4] = "LIST";
+	char getCommand[5] = "GETM ";
+	char exitCommand[4] = "EXIT";
+
+
+	/* write(sockFD,"Test!\n", 6);  *//*for fast telnet testing temporary */
+	char sBuffer[PACKET_SIZE+1] = {0};
+	char dBuffer[PACKET_SIZE-HEADER_SIZE+2] = {0};
+	int newCommand = 0;
+	int got = 0;
+
+	while(true)
+	{
+		/* pataisyti i buferizuota rydinga */
+		got = read(sockFD, sBuffer, PACKET_SIZE);
+		if(got>0)
+		{
+			got = unmarshalPacket(sBuffer, dBuffer);
+			memcpy(&newCommand, dBuffer, 4);
+			printf("Got (%i): %s\n", strlen(sBuffer+sizeof(TCommand)));
+			printf("Unmarshaled message(%i): %s\n", strlen(dBuffer+sizeof(TCommand)), dBuffer+sizeof(TCommand));
+			printf("Unmarshaled command: %i\n", newCommand);
+
+			if(newCommand == EXIT_COMMAND)
+			{	
+				printf("Closing child socket...\n");
+				close(sockFD);
+			}
+			/*
+			exit(1);
+			*/
+		}
+	}
 }

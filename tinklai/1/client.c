@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -58,9 +59,57 @@ int main(int argc, char* argv[])
 	
 	while(true)
 	{
-		printf("Main interface:\n");
+		char ciBuffer[PACKET_SIZE-HEADER_SIZE] = {0};
+		int state = 0;
+
+
+		printf("Please, enter a command:\n");
+		/* scanf("%252[0-9a-Z ]s", (char*) &ciBuffer); */
+		fgets(ciBuffer, sizeof(ciBuffer)-2, stdin);
+
+		printf("\nEntered (%i): %s\n", strlen(ciBuffer),  (char*) &ciBuffer);
+
+		if(handleInput(sockFD, (char*) &ciBuffer, &state))
+		{
+			printf("Error entering a command!\n");
+		}
 	}
 	
 	return 0;
 }
 
+int handleInput(SOCKET sockFD, char* ciBuffer, int* state)
+{
+	printf("Input is(%i): %s\n", strlen(ciBuffer), ciBuffer);
+/*
+	char sendCommand[5] = "SEND ";
+	char joinCommand[5] = "JOIN ";
+	char listCommand[4] = "LIST";
+	char getCommand[5] = "GETM ";
+	char exitCommand[4] = "EXIT";
+*/
+	printf("cmp (%i): %i", sizeof(EXIT_COMMAND), EXIT_COMMAND);
+	/* char* command = strndup(ciBuffer, 4); */
+	if((*state) == 0)
+	{
+		if(strlen(ciBuffer)>3)	
+		{
+			/* write(sockFD, ciBuffer, 273); */
+			if(sendData(sockFD, ciBuffer))
+			{
+				(*state) = 1;
+			}
+			/*send */
+		}
+		else
+		{
+			printf("Bad input!\n");
+	
+		}
+	}
+	else
+	{
+		/* receive */
+	}
+	return 0;
+}
